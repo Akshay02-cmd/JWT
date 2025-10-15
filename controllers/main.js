@@ -1,4 +1,5 @@
-const customeAPIError = require("../errors/custom-error");
+const JWT = require('jsonwebtoken')
+const CustomAPIError = require("../errors/custom-error");
 
 const login = async (req, res) => {
   const { username, password } = req.body;
@@ -8,18 +9,28 @@ const login = async (req, res) => {
   //check in controller
   
   if (!username || !password) {
-    throw new customeAPIError("please provide username and password", 400);
+    throw new CustomAPIError("please provide username and password", 400);
   }
-  console.log(username, typeof password);
-  res.send("Fake login/Register/signup Route");
+
+  const id = new Date().getDate();
+  const token = JWT.sign({id,username},process.env.JWT_SECRET,{expiresIn:'30d'})
+
+  res.status(200).json({msg: `user created `,token:token});
 };
 
 const dashboard = async (req, res) => {
-  const luckynumber = Math.floor(Math.random() * 100);
-  res.status(200).json({
-    msg: `hello, John Doe`,
-    secret: `here is your authorized data and your lucky number is ${luckynumber}`,
-  });
+ 
+  try{
+    // req.user should be set by the authentication middleware for protected routes
+    console.log(req.user);
+    const luckynumber = Math.floor(Math.random() * 100);
+    res.status(200).json({
+      msg: `hello, ${req.user.username}`,
+      secret: `here is your authorized data and your lucky number is ${luckynumber}`,
+    });
+  }catch(error){
+    throw new CustomAPIError("not authorized to access this route",401);
+  }
 };
 
 module.exports = {
