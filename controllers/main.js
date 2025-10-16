@@ -1,5 +1,5 @@
 const JWT = require("jsonwebtoken");
-const CustomAPIError = require("../errors/custom-error");
+const { BadRequestError, UnathenticatedError } = require("../errors");
 
 const login = async (req, res) => {
   const { username, password } = req.body;
@@ -9,7 +9,7 @@ const login = async (req, res) => {
   //check in controller
 
   if (!username || !password) {
-    throw new CustomAPIError("please provide username and password", 400);
+    throw new BadRequestError("please provide username and password");
   }
 
   const id = new Date().getDate();
@@ -30,7 +30,7 @@ const dashboard = async (req, res) => {
       secret: `here is your authorized data and your lucky number is ${luckynumber}`,
     });
   } catch (error) {
-    throw new CustomAPIError("not authorized to access this route", 401);
+    throw new UnathenticatedError("not authorized to access this route");
   }
 };
 
