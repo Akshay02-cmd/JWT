@@ -17,7 +17,6 @@ const authenticationMiddleware = async (req, res, next) => {
   } catch (error) {
     throw new CustomAPIError("not authorized to access the route", 401);
   }
-
 };
 
 module.exports = authenticationMiddleware;

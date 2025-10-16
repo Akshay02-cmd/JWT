@@ -1,4 +1,4 @@
-const JWT = require('jsonwebtoken')
+const JWT = require("jsonwebtoken");
 const CustomAPIError = require("../errors/custom-error");
 
 const login = async (req, res) => {
@@ -7,20 +7,21 @@ const login = async (req, res) => {
   //Mongoose validation
   //joi
   //check in controller
-  
+
   if (!username || !password) {
     throw new CustomAPIError("please provide username and password", 400);
   }
 
   const id = new Date().getDate();
-  const token = JWT.sign({id,username},process.env.JWT_SECRET,{expiresIn:'30d'})
+  const token = JWT.sign({ id, username }, process.env.JWT_SECRET, {
+    expiresIn: "30d",
+  });
 
-  res.status(200).json({msg: `user created `,token:token});
+  res.status(200).json({ msg: `user created `, token: token });
 };
 
 const dashboard = async (req, res) => {
- 
-  try{
+  try {
     // req.user should be set by the authentication middleware for protected routes
     console.log(req.user);
     const luckynumber = Math.floor(Math.random() * 100);
@@ -28,8 +29,8 @@ const dashboard = async (req, res) => {
       msg: `hello, ${req.user.username}`,
       secret: `here is your authorized data and your lucky number is ${luckynumber}`,
     });
-  }catch(error){
-    throw new CustomAPIError("not authorized to access this route",401);
+  } catch (error) {
+    throw new CustomAPIError("not authorized to access this route", 401);
   }
 };
 
